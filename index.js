@@ -61,6 +61,6 @@ app.get("/test", async function(req, res) {
     res.send(result);
 });
 
-app.listen(app.get("PORT"), async function() {
-    console.info("Listen on", app.get("PORT"));
+app.listen(app.get("port"), async function() {
+    console.info("Listen on", app.get("port"));
 });
