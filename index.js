@@ -51,6 +51,7 @@ const dump = async function() {
 
 init();
 const app = express();
+app.set("port", process.env.PORT || 3000);
 app.get("/", async function(req, res) {
     res.send("hello world");
 });
@@ -60,6 +61,6 @@ app.get("/test", async function(req, res) {
     res.send(result);
 });
 
-app.listen(app.get("PORT") || 3000, async function() {
-    console.info("Listen on", app.get("PORT") || 3000);
+app.listen(app.get("PORT"), async function() {
+    console.info("Listen on", app.get("PORT"));
 });
