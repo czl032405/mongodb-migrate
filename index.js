@@ -26,24 +26,26 @@ const dump = async function() {
     let collections = await fromDb.collections();
     let limit = 2000;
     await Promise.all(
-        collections.map(async collection => {
-            console.info("begin ", collection.collectionName);
-            let count = await collection.countDocuments({});
-            await targetDb.collection(collection.collectionName).deleteMany({});
-            let skip = 0;
-            while (skip < count) {
-                console.info("begin ", collection.collectionName, skip, "/", count);
-                let result = await collection
-                    .find({})
-                    .skip(skip)
-                    .limit(limit)
-                    .toArray();
-                skip += limit;
+        collections
+            .filter(c => !/system/i.test(c.collectionName))
+            .map(async collection => {
+                console.info("begin ", collection.collectionName);
+                let count = await collection.countDocuments({});
+                await targetDb.collection(collection.collectionName).deleteMany({});
+                let skip = 0;
+                while (skip < count) {
+                    console.info("begin ", collection.collectionName, skip, "/", count);
+                    let result = await collection
+                        .find({})
+                        .skip(skip)
+                        .limit(limit)
+                        .toArray();
+                    skip += limit;
 
-                await targetDb.collection(collection.collectionName).insertMany(result);
-                console.info("finish ", collection.collectionName, skip, "/", count);
-            }
-        })
+                    await targetDb.collection(collection.collectionName).insertMany(result);
+                    console.info("finish ", collection.collectionName, skip, "/", count);
+                }
+            })
     );
 
     console.info("all finish");
