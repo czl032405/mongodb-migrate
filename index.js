@@ -69,7 +69,15 @@ app.get("/test2", async function(req, res) {
         console.info(i);
         return i;
     });
-    let pool = new PromisePool(tasks, { concurrency: 1, maxRetry: 1 });
+    let pool = new PromisePool(tasks, {
+        concurrency: 1,
+        maxRetry: 1,
+        onProgressRetry(index, retry, error) {
+            if (error) {
+                console.error(error);
+            }
+        }
+    });
     let result = await pool.start();
 
     res.send(result);
