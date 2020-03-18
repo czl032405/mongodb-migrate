@@ -46,7 +46,15 @@ const dump = async function() {
         }
     });
 
-    let pool = new PromisePool(tasks, { concurrency: 1, maxRetry: 1 });
+    let pool = new PromisePool(tasks, {
+        concurrency: 1,
+        maxRetry: 1,
+        onProgress(index, result, error) {
+            if (error) {
+                console.error(error);
+            }
+        }
+    });
     let result = await pool.start();
     console.info("ALL FINISH");
     runing = false;
