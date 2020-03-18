@@ -24,7 +24,7 @@ const dump = async function() {
     let fromDb = fromClient.db(FROM_DATABASE_NAME);
     let targetDb = targetClient.db(TARGET_DATABASE_NAME);
     let collections = await fromDb.collections();
-    let limit = 200;
+    let limit = 100;
     await Promise.all(
         collections
             .filter(c => !/system/i.test(c.collectionName))
