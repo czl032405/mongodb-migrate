@@ -23,7 +23,7 @@ const dump = async function() {
     let fromDb = fromClient.db(FROM_DATABASE_NAME);
     let targetDb = targetClient.db(TARGET_DATABASE_NAME);
     let collections = await fromDb.collections();
-    let limit = process.env.MAX_INSERT || 100;
+    let limit = +process.env.MAX_INSERT || 100;
 
     let tasks = collections.map(collection => async () => {
         console.info("COLLECTION BEGIN ", collection.collectionName);
