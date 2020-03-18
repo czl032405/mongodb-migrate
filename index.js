@@ -11,7 +11,12 @@ const TARGET_DATABASE_NAME = process.env.TARGET_DATABASE_NAME || "therapax";
 const FROM_URI = process.env.FROM_URI || "mongodb://localhost:27017";
 const FROM_DATABASE_NAME = process.env.FROM_DATABASE_NAME || "therapax";
 
+let runing = false;
 const dump = async function() {
+    if (runing) {
+        return "running";
+    }
+    runing = true;
     let fromClient = await MongoClient.connect(FROM_URI);
     console.info("CONNECTING FROM DATABASE SUCCESS", FROM_URI);
 
@@ -28,6 +33,7 @@ const dump = async function() {
         await targetDb.collection(collection.collectionName).deleteMany({});
         let skip = 0;
         while (skip < count) {
+            console.info(collection.collectionName, `${Math.min(skip + limit, count)}`, "/", count, "");
             let result = await collection
                 .find({})
                 .skip(skip)
@@ -42,8 +48,9 @@ const dump = async function() {
 
     let pool = new PromisePool(tasks, { concurrency: 1, maxRetry: 1 });
     let result = await pool.start();
-
     console.info("ALL FINISH");
+    runing = false;
+    return "ALL FINISH";
 };
 
 const app = express();
